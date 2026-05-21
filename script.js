@@ -31,4 +31,11 @@ async function gestisciRichiesta() {
     },
     body: JSON.stringify({
     });
-}   
+}
+
+const oggettoRichiesta = {
+    "contents": [
+        {
+        "parts":[{ "text": "Qui devi inserire il prompt" }]
+
+}
