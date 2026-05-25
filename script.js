@@ -104,14 +104,110 @@ if (document.getElementById('btnInvia')) {
         document.getElementById('inputCinema').checked = false;
     });
 }
+function mostraFilm() {
 
+    let tabella = document.getElementById("corpoTabella");
+
+    // Se non siamo nella pagina tabella.html
+    if (!tabella) {
+        return;
+    }
+
+    // Pulizia tabella
+    tabella.innerHTML = "";
+
+    // Ciclo film
+    listaFilm.forEach(function(film, indice) {
+        // Creazione riga
+        let riga = document.createElement("tr");
+        // CELLA NOME
+        let cellaNome = document.createElement("td");
+        cellaNome.innerText = film.nome;
+        // CELLA DURATA
+        let cellaDurata = document.createElement("td");
+        cellaDurata.innerText = film.durata + " min";
+        // CELLA DATA
+        let cellaData = document.createElement("td");
+        if (film.data) {
+            cellaData.innerText = film.data;
+        }
+        else {
+            cellaData.innerText = "Non disponibile";
+        }
+        // CELLA CINEMA
+        let cellaCinema = document.createElement("td");
+        if (film.cinema === true) {
+            cellaCinema.innerText = "SI";
+        }
+        else {
+            cellaCinema.innerText = "NO";
+        }
+        // CELLA PULSANTE
+        let cellaBottone = document.createElement("td");
+        let bottoneElimina =
+            document.createElement("button");
+        bottoneElimina.innerText = "Elimina";
+        bottoneElimina.className = "btn btn-danger";
+        bottoneElimina.addEventListener(
+            "click",
+            function() {
+                eliminaFilm(indice);
+            }
+        );
+        // Inserimento bottone nella cella
+        cellaBottone.appendChild(bottoneElimina);
+        // Inserimento celle nella riga
+        riga.appendChild(cellaNome);
+        riga.appendChild(cellaDurata);
+        riga.appendChild(cellaData);
+        riga.appendChild(cellaCinema);
+        riga.appendChild(cellaBottone);
+        // Inserimento riga nella tabella
+        tabella.appendChild(riga);
+    });
+
+}
 
 
 let btnInvia = document.getElementById("btn-invia");
 
+const btnSalva = document.getElementById("btnSalvataggioInformazioni");
 
-let filmSalvati =
-    JSON.parse(localStorage.getItem("listaFilm")) || [];
+if (btnSalva) {
+
+    btnSalva.addEventListener("click", function() {
+
+        localStorage.setItem(
+            "listaFilm",
+            JSON.stringify(listaFilm)
+        );
+
+        alert("Informazioni salvate!");
+
+    });
+
+}
+
+const btnCarica = document.getElementById("btnCaricamentoInformazioni");
+
+if (btnCarica) {
+
+    btnCarica.addEventListener("click", function() {
+
+        listaFilm =
+        JSON.parse(
+            localStorage.getItem("listaFilm")
+        ) || [];
+
+        mostraFilm();
+
+        alert("Informazioni caricate!");
+
+    });
+
+}
+
+let filmSalvati =JSON.parse(localStorage.getItem("listaFilm")) || [];
 
 if (filmSalvati.length > 0) {
     listaFilm = filmSalvati;
