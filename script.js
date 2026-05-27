@@ -95,6 +95,7 @@ if (document.getElementById('btnInvia')) {
 
         // 5. Aggiungiamo il film all'array globale
         listaFilm.push(nuovoFilm);
+        localStorage.setItem("listaFilm", JSON.stringify(listaFilm));
         alert("Film salvato con successo!");
         
         // 6. Svuotiamo i campi visivi del form per il prossimo inserimento
@@ -105,70 +106,61 @@ if (document.getElementById('btnInvia')) {
     });
 }
 function mostraFilm() {
-
     let tabella = document.getElementById("corpoTabella");
-
-    // Se non siamo nella pagina tabella.html
-    if (!tabella) {
-        return;
-    }
-
-    // Pulizia tabella
+    if (!tabella) return; // non siamo in tabella.html, esci
+ 
     tabella.innerHTML = "";
-
-    // Ciclo film
+ 
     listaFilm.forEach(function(film, indice) {
-        // Creazione riga
         let riga = document.createElement("tr");
-        // CELLA NOME
+ 
+        // NOME
         let cellaNome = document.createElement("td");
         cellaNome.innerText = film.nome;
-        // CELLA DURATA
+ 
+        // DURATA
         let cellaDurata = document.createElement("td");
         cellaDurata.innerText = film.durata + " min";
-        // CELLA DATA
+ 
+        // DATA (formato gg-mm-aaaa)
         let cellaData = document.createElement("td");
         if (film.data) {
-            cellaData.innerText = film.data;
-        }
-        else {
+            let parti = film.data.split("-");
+            cellaData.innerText = parti[2] + "-" + parti[1] + "-" + parti[0];
+        } else {
             cellaData.innerText = "Non disponibile";
         }
-        // CELLA CINEMA
+ 
+        // CINEMA
         let cellaCinema = document.createElement("td");
-        if (film.cinema === true) {
-            cellaCinema.innerText = "SI";
-        }
-        else {
-            cellaCinema.innerText = "NO";
-        }
-        // CELLA PULSANTE
+        cellaCinema.innerText = film.cinema === true ? "SI" : "NO";
+ 
+        // PULSANTE ELIMINA
         let cellaBottone = document.createElement("td");
-        let bottoneElimina =
-            document.createElement("button");
+        let bottoneElimina = document.createElement("button");
         bottoneElimina.innerText = "Elimina";
-        bottoneElimina.className = "btn btn-danger";
-        bottoneElimina.addEventListener(
-            "click",
-            function() {
-                eliminaFilm(indice);
-            }
-        );
-        // Inserimento bottone nella cella
+        bottoneElimina.className = "btn btn-danger btn-sm";
+        bottoneElimina.addEventListener("click", function() {
+            eliminaFilm(indice);
+        });
         cellaBottone.appendChild(bottoneElimina);
-        // Inserimento celle nella riga
+ 
+        // Aggiungi celle alla riga
         riga.appendChild(cellaNome);
         riga.appendChild(cellaDurata);
         riga.appendChild(cellaData);
         riga.appendChild(cellaCinema);
         riga.appendChild(cellaBottone);
-        // Inserimento riga nella tabella
+ 
         tabella.appendChild(riga);
     });
-
+ 
+    // Numero film
+    let numeroFilm = document.getElementById("NumeroFilm");
+    if (numeroFilm) {
+        numeroFilm.innerText = "Film registrati: " + listaFilm.length;
+    }
 }
-
-
 let btnInvia = document.getElementById("btn-invia");
 
 const btnSalva = document.getElementById("btnSalvataggioInformazioni");
@@ -206,6 +198,14 @@ if (btnCarica) {
     });
 
 }
+const btnEliminaTutti = document.getElementById("btnEliminazioneTutti");
+if (btnEliminaTutti) {
+    btnEliminaTutti.addEventListener("click", function() {
+        listaFilm = [];
+        localStorage.removeItem("listaFilm");
+        mostraFilm();
+    });
+}
 
 let filmSalvati =JSON.parse(localStorage.getItem("listaFilm")) || [];
 
@@ -213,35 +213,44 @@ if (filmSalvati.length > 0) {
     listaFilm = filmSalvati;
 }
 async function gestisciRichiesta() {
-
+    let jsonFilm = JSON.stringify(listaFilm);
+    let prompt = "Leggi i seguenti dati in JSON: " + jsonFilm +
+        " Rispondi esclusivamente in JSON (no backtick, no markdown) suggerendomi 3 nuovi film che potrei vedere in base ai dati che ti ho fornito." +
+        " Il JSON che devi fornire deve avere un campo listaSuggerimenti che contiene un array di 3 oggetti dove ogni oggetto ha 2 campi:" +
+        " nome che contiene il nome del film e descrizione che contiene una brevissima descrizione sul perché quel film è stato proposto.";
+ 
     const oggettoRichiesta = {
-        contents: [
-            {
-                parts: [
-                    { text: "Qui devi inserire il prompt" }
-                ]
-            }
-        ]
+        contents: [{ parts: [{ text: prompt }] }]
     };
-
- let risposta = await fetch(
-        "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=AIzaSyA0E6BeSlm-b6_BLX18q94HpwerYw9f5xI",
-        {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify(oggettoRichiesta)
+ 
+    try {
+        let risposta = await fetch(
+            "https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent?key=AIzaSyCBVLm6HAYoqd0XLaCLbBtOAarKdYfNfYU",
+            {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(oggettoRichiesta)
+            }
+        );
+        let dati = await risposta.json();
+        let testo = dati.candidates[0].content.parts[0].text;
+        let suggerimenti = JSON.parse(testo);
+ 
+        let risultato = document.getElementById("risultato");
+        if (risultato) {
+            risultato.innerHTML = "<h5>Suggerimenti Gemini:</h5>";
+            suggerimenti.listaSuggerimenti.forEach(function(film) {
+                risultato.innerHTML += "<p><strong>" + film.nome + "</strong>: " + film.descrizione + "</p>";
+            });
         }
-    );
-
-    let dati = await risposta.json();
-
-    console.log(dati);
-
-    console.log(
-        dati.candidates[0].content.parts[0].text
-    );
+    } catch (e) {
+        console.log("Errore Gemini:", e);
+    }
 }
-
+function eliminaFilm(indice) {
+    listaFilm.splice(indice, 1);
+    localStorage.setItem("listaFilm", JSON.stringify(listaFilm));
+    mostraFilm();
+}
 gestisciRichiesta();
+mostraFilm();
