@@ -13,133 +13,6 @@ if (filmSalvatiAutomatici.length > 0) {
 
 // FUNZIONE PER MOSTRARE I FILM NELLA TABELLA HTML
 function mostraFilm() {
-    const corpoTabella = document.getElementById('corpoTabella');
-    
-    if (corpoTabella) {
-        corpoTabella.innerHTML = "";
-
-        listaFilm.forEach(function(film, indice) {
-            
-            let dataFormattata = "Non specificata";
-            if (film.data) {
-                let partiData = film.data.split("-"); 
-                dataFormattata = partiData[2] + "-" + partiData[1] + "-" + partiData[0]; 
-            }
-
-            let vistoAlCinema = "No";
-            if (film.cinema === true) {
-                vistoAlCinema = "Sì";
-            }
-
-            corpoTabella.innerHTML += `
-                <tr>
-                    <td>${film.nome}</td>
-                    <td>${film.durata} min</td>
-                    <td>${dataFormattata}</td>
-                    <td>${vistoAlCinema}</td>
-                    <td>
-                        <button class="btn btn-danger btn-sm" onclick="eliminaFilm(${indice})">Elimina</button>
-                    </td>
-                </tr>
-            `;
-        });
-    }
-
-    const contatoreTotale = document.getElementById('contatoreTotale');
-    if (contatoreTotale) {
-        contatoreTotale.innerText = "Totale film registrati: " + listaFilm.length;
-    }
-}
-
-// Mostriamo i film caricati all'apertura della pagina
-mostraFilm();
-
-
-// PULSANTE WATCH TIME
-const btnWatchTime = document.getElementById('btnWatchTime');
-if (btnWatchTime) {
-    btnWatchTime.addEventListener('click', function() {
-        let minutiTotali = 0;
-        listaFilm.forEach(function(film) {
-            minutiTotali += Number(film.durata);
-        });
-        document.getElementById('modalWatchTimeBody').innerText =
-            "Tempo totale speso a guardare film: " + minutiTotali + " minuti.";
-        let elementoModal = document.getElementById('modalWatchTime');
-        let finestraModal = new bootstrap.Modal(elementoModal);
-        finestraModal.show();
-    });
-}
-
-
-// PULSANTE FREQUENZA CINEMA
-const btnFrequenzaCinema = document.getElementById('btnFrequenzaCinema');
-if (btnFrequenzaCinema) {
-    btnFrequenzaCinema.addEventListener('click', function() {
-        let contatoreCinema = 0;
-        let nomiFilmCinema = [];
-        listaFilm.forEach(function(film) {
-            if (film.cinema === true) {
-                contatoreCinema++; 
-                nomiFilmCinema.push(film.nome); 
-            }
-        });
-        let listaTestuale = nomiFilmCinema.join(", ");
-        let messaggio = "Sei stato al cinema " + contatoreCinema + " volte. Film visti: " + listaTestuale;
-        document.getElementById('modalCinemaBody').innerText = messaggio;
-        let elementoModal = document.getElementById('modalCinema');
-        let finestraModal = new bootstrap.Modal(elementoModal);
-        finestraModal.show();
-    });
-}
-
-
-// PULSANTE INVIA DATI (AGGIUNGI FILM)
-const btnInvia = document.getElementById('btnInvia');
-if (btnInvia) {
-    btnInvia.addEventListener('click', function() {
-        let nomeScritto   = document.getElementById('inputNome').value.trim();
-        let durataScritta = document.getElementById('inputDurata').value;
-        let dataScritta   = document.getElementById('inputData').value;
-        let alCinema      = document.getElementById('inputCinema').checked;
- 
-        if (nomeScritto === "" || durataScritta === "" || dataScritta === "") {
-            alert("Per favore, compila tutti i campi!");
-            return;
-        }
- 
-        let filmGiaEsistente = false;
-        listaFilm.forEach(function(film) {
-            if (film.nome.toLowerCase() === nomeScritto.toLowerCase()) {
-                filmGiaEsistente = true;
-            }
-        });
- 
-        if (filmGiaEsistente === true) {
-            alert("Questo film è già stato registrato!");
-            return;
-        }
- 
-        let nuovoFilm = {
-            nome:   nomeScritto,
-            durata: Number(durataScritta),
-            data:   dataScritta,
-            cinema: alCinema
-        };
- 
-        listaFilm.push(nuovoFilm);
-        localStorage.setItem("listaFilm", JSON.stringify(listaFilm));
-        alert("Film salvato con successo!");
-        
-        mostraFilm();
-        
-        document.getElementById('inputNome').value     = "";
-        document.getElementById('inputDurata').value   = "";
-        document.getElementById('inputData').value     = "";
-        document.getElementById('inputCinema').checked = false;
-    });
-}
-function mostraFilm() {
     let tabella = document.getElementById("corpoTabella");
     if (!tabella) return; // non siamo in tabella.html, esci
  
@@ -195,23 +68,92 @@ function mostraFilm() {
         numeroFilm.innerText = "Film registrati: " + listaFilm.length;
     }
 }
-let btnInvia = document.getElementById("btn-invia");
+// Mostriamo i film caricati all'apertura della pagina
+mostraFilm();
 
-const btnSalva = document.getElementById("btnSalvataggioInformazioni");
 
-if (btnSalva) {
-
-    btnSalva.addEventListener("click", function() {
-
-        localStorage.setItem(
-            "listaFilm",
-            JSON.stringify(listaFilm)
-        );
-
-        alert("Informazioni salvate!");
-
+// PULSANTE WATCH TIME
+const btnWatchTime = document.getElementById('btnWatchTime');
+if (btnWatchTime) {
+    btnWatchTime.addEventListener('click', function() {
+        let minutiTotali = 0;
+        listaFilm.forEach(function(film) {
+            minutiTotali += Number(film.durata);
+        });
+        document.getElementById('modalWatchTimeBody').innerText =
+            "Tempo totale speso a guardare film: " + minutiTotali + " minuti.";
+        let elementoModal = document.getElementById('modalWatchTime');
+        let finestraModal = new bootstrap.Modal(elementoModal);
+        finestraModal.show();
     });
+}
 
+
+// PULSANTE FREQUENZA CINEMA
+const btnFrequenzaCinema = document.getElementById('btnFrequenzaCinema');
+if (btnFrequenzaCinema) {
+    btnFrequenzaCinema.addEventListener('click', function() {
+        let contatoreCinema = 0;
+        let nomiFilmCinema = [];
+        listaFilm.forEach(function(film) {
+            if (film.cinema === true) {
+                contatoreCinema++; 
+                nomiFilmCinema.push(film.nome); 
+            }
+        });
+        let listaTestuale = nomiFilmCinema.join(", ");
+        let messaggio = "Sei stato al cinema " + contatoreCinema + " volte. Film visti: " + listaTestuale;
+        document.getElementById('modalCinemaBody').innerText = messaggio;
+        let elementoModal = document.getElementById('modalCinema');
+        let finestraModal = new bootstrap.Modal(elementoModal);
+        finestraModal.show();
+    });
+}
+
+
+const btnInvia = document.getElementById("btnInvia");
+if (btnInvia) {
+    btnInvia.addEventListener("click", function() {
+        let nomeScritto   = document.getElementById("inputNome").value.trim();
+        let durataScritta = document.getElementById("inputDurata").value;
+        let dataScritta   = document.getElementById("inputData").value;
+        let alCinema      = document.getElementById("inputCinema").checked;
+ 
+        // Controllo campi vuoti
+        if (nomeScritto === "" || durataScritta === "" || dataScritta === "") {
+            alert("Per favore, compila tutti i campi!");
+            return;
+        }
+ 
+        // Controllo duplicati
+        let filmGiaEsistente = false;
+        listaFilm.forEach(function(film) {
+            if (film.nome.toLowerCase() === nomeScritto.toLowerCase()) {
+                filmGiaEsistente = true;
+            }
+        });
+        if (filmGiaEsistente) {
+            alert("Questo film è già stato registrato!");
+            return;
+        }
+ 
+        // Crea e salva il nuovo film
+        let nuovoFilm = {
+            nome:   nomeScritto,
+            durata: Number(durataScritta),
+            data:   dataScritta,
+            cinema: alCinema
+        };
+        listaFilm.push(nuovoFilm);
+        localStorage.setItem("listaFilm", JSON.stringify(listaFilm)); // salva subito
+        alert("Film salvato con successo!");
+ 
+        // Svuota i campi
+        document.getElementById("inputNome").value    = "";
+        document.getElementById("inputDurata").value  = "";
+        document.getElementById("inputData").value    = "";
+        document.getElementById("inputCinema").checked = false;
+    });
 }
 
 const btnCarica = document.getElementById("btnCaricamentoInformazioni");
@@ -259,7 +201,7 @@ async function gestisciRichiesta() {
  
     try {
         let risposta = await fetch(
-            "https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent?key=AIzaSyCBVLm6HAYoqd0XLaCLbBtOAarKdYfNfYU",
+            "https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent?key=AIzaSyC5DhauRSN71KvoymkGsK3xKPZhMiZuppU",
             {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
@@ -286,5 +228,8 @@ function eliminaFilm(indice) {
     localStorage.setItem("listaFilm", JSON.stringify(listaFilm));
     mostraFilm();
 }
-gestisciRichiesta();
+const btnGemini = document.getElementById("btnGemini");
+if (btnGemini) {
+    btnGemini.addEventListener("click", gestisciRichiesta);
+}
 mostraFilm();
