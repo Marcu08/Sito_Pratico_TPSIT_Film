@@ -1,118 +1,185 @@
+/* Importa il font Raleway da Google Fonts — più bello del default */
+@import url('https://fonts.googleapis.com/css2?family=Raleway:wght@400;600&display=swap');
+
+/* Seleziona TUTTI gli elementi della pagina */
 * {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
+    box-sizing: border-box; /* il bordo è incluso nella larghezza, non si aggiunge fuori */
+    margin: 0;              /* azzera tutti i margini di default del browser */
+    padding: 0;             /* azzera tutti i padding di default del browser */
 }
 
+/* Stile del corpo della pagina */
 body {
-    background: linear-gradient(to right, #ffcccc, #ffe6e6);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    min-height: 100vh;
-    padding: 30px;
-    font-family: sans-serif;
+    background: #12121f;           /* colore di sfondo: blu notte scuro */
+    font-family: 'Raleway', sans-serif; /* usa il font importato sopra */
+    color: #eee;                   /* colore del testo: bianco/grigio chiaro */
+    display: flex;                 /* mette i figli in riga o colonna */
+    flex-direction: column;        /* li mette in colonna (uno sotto l'altro) */
+    align-items: center;           /* li centra orizzontalmente */
+    min-height: 100vh;             /* la pagina occupa almeno tutta l'altezza dello schermo */
+    padding: 30px;                 /* spazio interno di 30px su tutti i lati */
 }
 
+/* Stile della barra di navigazione */
 nav {
-    background-color: #333;
-    width: 100%;
-    overflow: hidden;
-    position: fixed;
-    top: 0;
-    left: 0;
+    background: #0a0a14;           /* sfondo ancora più scuro del body */
+    border-bottom: 2px solid #d4af37; /* linea dorata sotto la navbar */
+    width: 100%;                   /* occupa tutta la larghezza */
+    position: fixed;               /* resta fissa in alto anche scorrendo */
+    top: 0;                        /* attaccata al bordo superiore */
+    left: 0;                       /* attaccata al bordo sinistro */
 }
 
+/* La lista dentro la navbar */
 nav ul {
-    list-style: none;
-    display: flex;
-    padding: 0;
-    margin: 0;
+    list-style: none; /* rimuove i pallini delle liste */
+    display: flex;    /* mette i link in riga invece che in colonna */
 }
 
+/* I link della navbar */
 nav ul li a {
-    display: block;
-    color: white;
-    text-decoration: none;
-    padding: 14px 20px;
-    transition: background-color 0.2s;
+    display: block;          /* occupa tutto lo spazio del li */
+    color: #d4af37;          /* colore dorato */
+    text-decoration: none;   /* rimuove la sottolineatura dei link */
+    padding: 14px 20px;      /* spazio interno: 14px sopra/sotto, 20px sinistra/destra */
+    transition: background 0.3s, color 0.3s; /* il cambio di colore avviene gradualmente in 0.3s */
 }
 
+/* Quando passi il mouse sopra un link della navbar */
 nav ul li a:hover {
-    background-color: #555;
+    background: #1a1a2e; /* sfondo leggermente più chiaro */
+    color: #ffffff;      /* testo diventa bianco */
 }
 
+/* La card centrale del form */
 .contact-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    width: 100%;
-    max-width: 500px;
-    background-color: #f2f2f2;
-    padding: 30px 20px;
-    border-radius: 8px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-    margin-top: 70px;
+    width: 100%;                        /* occupa tutta la larghezza disponibile */
+    max-width: 500px;                   /* ma non supera 500px */
+    background: #1c1c30;               /* sfondo blu scuro, diverso dal body */
+    border: 1px solid #d4af37;         /* bordo dorato sottile */
+    border-radius: 12px;               /* angoli arrotondati */
+    padding: 30px;                     /* spazio interno di 30px */
+    margin-top: 70px;                  /* spazio sopra per non finire sotto la navbar */
+    animation: fadeUp 0.6s ease;       /* applica l'animazione fadeUp (definita sotto) */
 }
 
+/* I titoli h2 dentro la card e .titolo */
 .titolo h2,
 .contact-container h2 {
-    text-align: center;
-    color: #333;
-    font-size: 24px;
-    margin-bottom: 20px;
+    color: #d4af37;          /* testo dorato */
+    text-align: center;      /* centrato */
+    font-size: 22px;         /* dimensione testo */
+    letter-spacing: 1px;     /* spazio extra tra le lettere */
+    margin-bottom: 20px;     /* spazio sotto il titolo */
 }
 
+/* Ogni gruppo campo (etichetta + input) */
 .form-group {
-    display: flex;
-    flex-direction: column;
-    align-items: stretch;  
-    width: 100%;
-    gap: 4px;
-    margin-bottom: 15px;
+    display: flex;           /* mette etichetta e input in colonna */
+    flex-direction: column;  /* uno sotto l'altro */
+    gap: 6px;                /* spazio tra etichetta e input */
+    margin-bottom: 16px;     /* spazio sotto ogni gruppo */
 }
 
+/* Le etichette dei campi (es. "Nome del film") */
 .form-group > p {
-    font-size: 15px;
-    color: #333;
-    margin-bottom: 2px;
+    font-size: 12px;             /* testo piccolo */
+    color: #888;                 /* grigio medio */
+    text-transform: uppercase;   /* trasforma in MAIUSCOLO automaticamente */
+    letter-spacing: 1px;         /* spazio tra lettere, look più elegante */
 }
 
+/* Gli input di testo e data */
 input[type="text"],
 input[type="date"] {
-    width: 100%;
-    padding: 10px 12px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
+    background: #12121f;     /* sfondo scuro come il body */
+    border: 1px solid #333;  /* bordo grigio scuro */
+    border-radius: 8px;      /* angoli arrotondati */
+    color: #eee;             /* testo chiaro */
+    padding: 10px 12px;      /* spazio interno */
+    font-size: 14px;         /* dimensione testo */
+    width: 100%;             /* occupa tutta la larghezza del gruppo */
+    transition: border-color 0.3s, box-shadow 0.3s; /* cambio graduale al focus */
 }
 
+/* Checkbox (la spunta "visto al cinema") */
 input[type="checkbox"] {
-    width: 18px;
-    height: 18px;
-    cursor: pointer;
-    align-self: flex-start;
+    width: 17px;                /* larghezza */
+    height: 17px;               /* altezza */
+    accent-color: #d4af37;      /* colore dorato per il segno di spunta */
+    cursor: pointer;            /* cursore a manina quando ci passi sopra */
 }
 
+/* Quando clicchi su un input */
 input:focus {
-    outline: none;
-    border-color: #666;
-    box-shadow: 0 0 0 2px rgba(0,0,0,0.1);
+    outline: none;                              /* rimuove il bordo blu di default del browser */
+    border-color: #d4af37;                     /* bordo diventa dorato */
+    box-shadow: 0 0 8px rgba(212,175,55,0.4); /* bagliore dorato attorno all'input */
 }
 
-#btn-invia {
-    display: block;
-    width: 100%;
-    padding: 12px;
-    margin-top: 10px;
-    background-color: green;
-    color: white;
-    border: none;
-    border-radius: 10px;
-    font-size: 16px;
-    cursor: pointer;
-    transition: background-color 0.2s;
+/* Il bottone INVIA DATI */
+#btnInvia {
+    width: 100%;             /* occupa tutta la larghezza */
+    padding: 12px;           /* spazio interno */
+    margin-top: 10px;        /* spazio sopra */
+    background: #d4af37;     /* sfondo dorato */
+    color: #12121f;          /* testo scuro (contrasto sul dorato) */
+    border: none;            /* rimuove il bordo di default */
+    border-radius: 8px;      /* angoli arrotondati */
+    font-size: 15px;         /* dimensione testo */
+    font-weight: 700;        /* testo in grassetto */
+    letter-spacing: 1px;     /* spazio tra lettere */
+    cursor: pointer;         /* cursore a manina */
+    transition: background 0.2s, transform 0.2s, box-shadow 0.2s; /* effetti graduali */
 }
 
-#btn-invia:hover {
-    background-color: #006600;
+/* Hover sul bottone INVIA */
+#btnInvia:hover {
+    background: #b8941f;                        /* dorato più scuro */
+    transform: translateY(-3px);               /* si sposta 3px verso l'alto */
+    box-shadow: 0 6px 20px rgba(212,175,55,0.4); /* ombra dorata sotto */
+}
+
+/* Quando premi il bottone */
+#btnInvia:active {
+    transform: translateY(0); /* torna in posizione originale */
+}
+
+/* Righe della tabella cambiano colore al passaggio */
+tr {
+    transition: background 0.2s; /* cambio graduale */
+}
+
+tr:hover td {
+    background: #1c1c30; /* sfondo più chiaro sulla riga */
+    color: #ffffff;      /* testo bianco */
+}
+
+/* Tutti i bottoni colorati (Watch Time, Salva, ecc.) */
+button {
+    transition: transform 0.2s, box-shadow 0.2s; /* effetti graduali */
+    cursor: pointer; /* cursore a manina */
+}
+
+/* Hover sui bottoni */
+button:hover {
+    transform: translateY(-3px);               /* si alzano di 3px */
+    box-shadow: 0 4px 12px rgba(0,0,0,0.4);   /* ombra scura sotto */
+}
+
+/* Quando premi un bottone */
+button:active {
+    transform: translateY(0); /* torna giù */
+}
+
+/* Definizione dell'animazione fadeUp usata dalla card */
+@keyframes fadeUp {
+    from {
+        opacity: 0;                  /* parte invisibile */
+        transform: translateY(20px); /* parte spostata 20px verso il basso */
+    }
+    to {
+        opacity: 1;                 /* diventa visibile */
+        transform: translateY(0);   /* torna nella posizione normale */
+    }
 }
